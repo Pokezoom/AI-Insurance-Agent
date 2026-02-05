@@ -14,7 +14,7 @@ type PolicyService struct {
 }
 
 func NewPolicyService(glmClient *client.GLMClient) (*PolicyService, error) {
-	data, err := os.ReadFile("prompt.json")
+	data, err := os.ReadFile("prompt/prompt.json")
 	if err != nil {
 		return nil, err
 	}
