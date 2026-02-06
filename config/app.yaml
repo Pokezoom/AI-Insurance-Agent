@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+database:
+  dsn: "root:password@tcp(127.0.0.1:3306)/insurance_agent?charset=utf8mb4&parseTime=True&loc=Local"
+
+jwt:
+  secret: "your-secret-key-change-in-production"
+  expire_hours: 168
+
+glm:
+  api_key: "0ffcfbc67b30483a93a6fa041936f76b.OS41RBK74yt6mskO"
+  url: "https://open.bigmodel.cn/api/paas/v4/chat/completions"
