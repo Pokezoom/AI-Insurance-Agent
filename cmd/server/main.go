@@ -7,22 +7,31 @@ import (
 	"AI-Insurance-Agent/internal/middleware"
 	"AI-Insurance-Agent/internal/repository"
 	"AI-Insurance-Agent/internal/service"
+	"fmt"
 	"log"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	// 加载配置
+	cfg, err := config.LoadConfig("config/app.yaml")
+	if err != nil {
+		log.Fatal("配置文件加载失败:", err)
+	}
+
 	// 初始化数据库
-	dsn := "root:password@tcp(127.0.0.1:3306)/insurance_agent?charset=utf8mb4&parseTime=True&loc=Local"
-	if err := config.InitDB(dsn); err != nil {
+	if err := config.InitDB(cfg.Database.DSN); err != nil {
 		log.Fatal("数据库连接失败:", err)
 	}
 
+	// 设置 JWT Secret
+	middleware.JWTSecret = []byte(cfg.JWT.Secret)
+
 	// 初始化客户端
 	glmClient := &client.GLMClient{
-		APIKey: "0ffcfbc67b30483a93a6fa041936f76b.OS41RBK74yt6mskO",
-		URL:    "https://open.bigmodel.cn/api/paas/v4/chat/completions",
+		APIKey: cfg.GLM.APIKey,
+		URL:    cfg.GLM.URL,
 	}
 
 	// 初始化仓储
@@ -68,6 +77,6 @@ func main() {
 		auth.PUT("/admin/users/:user_id/status", userHandler.UpdateUserStatus)
 	}
 
-	log.Println("服务启动在 :8080")
-	r.Run(":8080")
+	log.Printf("服务启动在 :%d\n", cfg.Server.Port)
+	r.Run(fmt.Sprintf(":%d", cfg.Server.Port))
 }

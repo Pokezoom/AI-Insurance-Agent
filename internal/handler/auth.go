@@ -3,7 +3,7 @@ package handler
 import (
 	"AI-Insurance-Agent/internal/service"
 	"net/http"
-	"strconv"
+	_ "strconv"
 
 	"github.com/gin-gonic/gin"
 )

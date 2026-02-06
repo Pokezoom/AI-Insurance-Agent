@@ -1,11 +1,38 @@
 package config
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"os"
 
-type Config struct {
-	GLMAPIKey string `json:"glm_api_key"`
-	GLMURL    string `json:"glm_url"`
-	Port      string `json:"port"`
+	"gopkg.in/yaml.v3"
+)
+
+type AppConfig struct {
+	Server struct {
+		Port int `yaml:"port"`
+	} `yaml:"server"`
+	Database struct {
+		DSN string `yaml:"dsn"`
+	} `yaml:"database"`
+	JWT struct {
+		Secret      string `yaml:"secret"`
+		ExpireHours int    `yaml:"expire_hours"`
+	} `yaml:"jwt"`
+	GLM struct {
+		APIKey string `yaml:"api_key"`
+		URL    string `yaml:"url"`
+	} `yaml:"glm"`
+}
+
+func LoadConfig(path string) (*AppConfig, error) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	var cfg AppConfig
+	err = yaml.Unmarshal(data, &cfg)
+	return &cfg, err
 }
 
 type PromptConfig struct {
